@@ -79,8 +79,8 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   bootstrap_dns:
-  - 202.206.240.13
   - 223.5.5.5
+  - 119.29.29.29
   - 114.114.115.115
   all_servers: true
   allowed_clients: []
