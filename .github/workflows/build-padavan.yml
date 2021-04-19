@@ -28,6 +28,7 @@ jobs:
         sh dl_toolchain.sh
         mkdir -p /opt/images/
         cp -f $GITHUB_WORKSPACE/YK-L1.config /opt/rt-n56u/trunk/configs/templates/
+        svn co https://github.com/chongshengB/rt-n56u/trunk/trunk/configs/boards/YK-L1 /opt/rt-n56u/trunk/configs/boards/
     - name: Build Firmware
       env:
         TNAME: YK-L1
