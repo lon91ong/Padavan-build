@@ -27,7 +27,7 @@ jobs:
         cd /opt/rt-n56u/toolchain-mipsel
         sh dl_toolchain.sh
         mkdir -p /opt/images/
-        cp -f YK-L1.config /opt/rt-n56u/trunk/configs/templates/
+        cp -f $GITHUB_WORKSPACE/YK-L1.config /opt/rt-n56u/trunk/configs/templates/
     - name: Build Firmware
       env:
         TNAME: YK-L1
