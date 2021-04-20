@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir /media/extDisk && mount -t ext4 /dev/mmcblk0 /media/extDisk
+#mkdir /media/extDisk && mount -t ext4 /dev/mmcblk0 /media/extDisk
 change_dns() {
 	if [ "$(nvram get adg_redirect)" = 1 ]; then
 		sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
