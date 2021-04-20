@@ -140,37 +140,40 @@ fi
 }
 
 dl_adg(){
-logger -t "AdGuardHome" "下载AdGuardHome"
-#wget --no-check-certificate -O /tmp/AdGuardHome.tar.gz https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.101.0/AdGuardHome_linux_mipsle.tar.gz
-curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
-if [ ! -f "/tmp/AdGuardHome/AdGuardHome" ]; then
-logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
-nvram set adg_enable=0
-exit 0
-else
-logger -t "AdGuardHome" "AdGuardHome下载成功。"
-chmod 777 /tmp/AdGuardHome/AdGuardHome
-fi
+	logger -t "AdGuardHome" "下载AdGuardHome"
+	curl -k -s -o /media/extDisk/Share/AdGuardHome.tar.gz --connect-timeout 10 --retry 3 \
+		https://ghproxy.com/https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mipsle_softfloat.tar.gz
+	#wget --no-check-certificate -O /tmp/AdGuardHome.tar.gz https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.101.0/AdGuardHome_linux_mipsle.tar.gz
+	tar -xzvf /media/extDisk/Share/AdGuardHome.tar.gz ./AdGuardHome/AdGuardHome --directory /media/extDisk/AdGuardHome
+	#curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
+	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
+	logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
+	nvram set adg_enable=0
+	exit 0
+	else
+	logger -t "AdGuardHome" "AdGuardHome下载成功。"
+	chmod 777 /media/extDisk/AdGuardHome/AdGuardHome
+	fi
 }
 
 start_adg(){
-    mkdir -p /tmp/AdGuardHome
+	mkdir -p /media/extDisk/AdGuardHome
 	mkdir -p /etc/storage/AdGuardHome
-	if [ ! -f "/tmp/AdGuardHome/AdGuardHome" ]; then
+	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
 	dl_adg
 	fi
 	getconfig
 	change_dns
 	set_iptable
 	logger -t "AdGuardHome" "运行AdGuardHome"
-	eval "/tmp/AdGuardHome/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -v" &
+	eval "/media/extDisk/AdGuardHome/AdGuardHome -c $adg_file -w /media/extDisk/AdGuardHome -v" &
 
 }
 stop_adg(){
-rm -rf /tmp/AdGuardHome
-killall -9 AdGuardHome
-del_dns
-clear_iptable
+	rm -rf /media/extDisk/AdGuardHome
+	killall -9 AdGuardHome
+	del_dns
+	clear_iptable
 }
 
 
