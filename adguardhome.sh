@@ -79,20 +79,21 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   bootstrap_dns:
-  - 223.5.5.5
-  - 119.29.29.29
-  - 114.114.115.115
+  - 1.1.1.1
   all_servers: true
   allowed_clients: []
   disallowed_clients: []
   blocked_hosts: []
   parental_sensitivity: 0
   parental_enabled: false
-  safesearch_enabled: false
-  safebrowsing_enabled: false
+  safesearch_enabled: true
+  safebrowsing_enabled: true
   resolveraddress: ""
   upstream_dns:
-  - 1.1.1.1
+  - 202.206.240.13
+  - 223.5.5.5
+  - 119.29.29.29
+  - 114.114.115.115
 tls:
   enabled: false
   server_name: ""
