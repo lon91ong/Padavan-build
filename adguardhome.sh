@@ -1,16 +1,16 @@
 #!/bin/sh
-#mkdir /media/extDisk && mount -t ext4 /dev/mmcblk0 /media/extDisk
+
 change_dns() {
-	if [ "$(nvram get adg_redirect)" = 1 ]; then
-		sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
-		sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
-		cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
-		no-resolv
-		server=127.0.0.1#5335
-		EOF
-		/sbin/restart_dhcpd
-		logger -t "AdGuardHome" "添加DNS转发到5335端口"
-	fi
+if [ "$(nvram get adg_redirect)" = 1 ]; then
+sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
+sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
+cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
+no-resolv
+server=127.0.0.1#5335
+EOF
+/sbin/restart_dhcpd
+logger -t "AdGuardHome" "添加DNS转发到5335端口"
+fi
 }
 del_dns() {
 sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
@@ -34,7 +34,7 @@ set_iptable()
 		ip6tables -t nat -A PREROUTING -p tcp -d $IP --dport 53 -j REDIRECT --to-ports 5335 >/dev/null 2>&1
 		ip6tables -t nat -A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-ports 5335 >/dev/null 2>&1
 	done
-    	logger -t "AdGuardHome" "重定向53端口"
+    logger -t "AdGuardHome" "重定向53端口"
     fi
 }
 
@@ -86,14 +86,11 @@ dns:
   blocked_hosts: []
   parental_sensitivity: 0
   parental_enabled: false
-  safesearch_enabled: true
-  safebrowsing_enabled: true
+  safesearch_enabled: false
+  safebrowsing_enabled: false
   resolveraddress: ""
   upstream_dns:
-  - 202.206.240.13
-  - 223.5.5.5
-  - 119.29.29.29
-  - 114.114.115.115
+  - 1.1.1.1
 tls:
   enabled: false
   server_name: ""
@@ -112,12 +109,12 @@ filters:
   name: AdAway
   id: 2
 - enabled: true
-  url: https://gitee.com/xinggsf/Adblock-Rule/raw/master/rule.txt
-  name: xinggsf@kafan.cn
+  url: https://hosts-file.net/ad_servers.txt
+  name: hpHosts - Ad and Tracking servers only
   id: 3
 - enabled: true
-  url: https://cdn.jsdelivr.net/gh/privacy-protection-tools/anti-AD@master/anti-ad-easylist.txt
-  name: anti-AD
+  url: https://www.malwaredomainlist.com/hostslist/hosts.txt
+  name: MalwareDomainList.com Hosts List
   id: 4
 user_rules: []
 dhcp:
@@ -140,27 +137,27 @@ fi
 }
 
 dl_adg(){
-	logger -t "AdGuardHome" "下载AdGuardHome"
-	curl -k -s -o /media/extDisk/Share/AdGuardHome.tar.gz --connect-timeout 10 --retry 3 \
-		https://ghproxy.com/https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mipsle_softfloat.tar.gz
-	#wget --no-check-certificate -O /tmp/AdGuardHome.tar.gz https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.101.0/AdGuardHome_linux_mipsle.tar.gz
-	tar -xzvf /media/extDisk/Share/AdGuardHome.tar.gz ./AdGuardHome/AdGuardHome --directory /media/extDisk/AdGuardHome
-	#curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
-	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
-		logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
-		nvram set adg_enable=0
-		exit 0
-	else
-		logger -t "AdGuardHome" "AdGuardHome下载成功。"
-		chmod 777 /media/extDisk/AdGuardHome/AdGuardHome
-	fi
+logger -t "AdGuardHome" "下载AdGuardHome"
+#wget --no-check-certificate -O /tmp/AdGuardHome.tar.gz https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.101.0/AdGuardHome_linux_mipsle.tar.gz
+curl -k -s -o /media/extDisk/Share/AdGuardHome.tar.gz --connect-timeout 10 --retry 3 \
+	https://ghproxy.com/https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mipsle_softfloat.tar.gz
+#curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
+tar -xzvf /media/extDisk/Share/AdGuardHome.tar.gz ./AdGuardHome/AdGuardHome --directory /media/extDisk/AdGuardHome
+if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
+logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
+nvram set adg_enable=0
+exit 0
+else
+logger -t "AdGuardHome" "AdGuardHome下载成功。"
+chmod 777 /media/extDisk/AdGuardHome/AdGuardHome
+fi
 }
 
 start_adg(){
-	mkdir -p /media/extDisk/AdGuardHome
+    mkdir -p /media/extDisk/AdGuardHome
 	mkdir -p /etc/storage/AdGuardHome
 	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
-		dl_adg
+	dl_adg
 	fi
 	getconfig
 	change_dns
@@ -170,10 +167,10 @@ start_adg(){
 
 }
 stop_adg(){
-	rm -rf /media/extDisk/AdGuardHome
-	killall -9 AdGuardHome
-	del_dns
-	clear_iptable
+rm -rf /media/extDisk/AdGuardHome
+killall -9 AdGuardHome
+del_dns
+clear_iptable
 }
 
 
