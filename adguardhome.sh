@@ -1,16 +1,16 @@
 #!/bin/sh
 mkdir /media/extDisk && mount -t ext4 /dev/mmcblk0 /media/extDisk
 change_dns() {
-if [ "$(nvram get adg_redirect)" = 1 ]; then
-sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
-sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
-cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
-no-resolv
-server=127.0.0.1#5335
-EOF
-/sbin/restart_dhcpd
-logger -t "AdGuardHome" "添加DNS转发到5335端口"
-fi
+	if [ "$(nvram get adg_redirect)" = 1 ]; then
+		sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
+		sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
+		cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
+		no-resolv
+		server=127.0.0.1#5335
+		EOF
+		/sbin/restart_dhcpd
+		logger -t "AdGuardHome" "添加DNS转发到5335端口"
+	fi
 }
 del_dns() {
 sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
@@ -34,7 +34,7 @@ set_iptable()
 		ip6tables -t nat -A PREROUTING -p tcp -d $IP --dport 53 -j REDIRECT --to-ports 5335 >/dev/null 2>&1
 		ip6tables -t nat -A PREROUTING -p udp -d $IP --dport 53 -j REDIRECT --to-ports 5335 >/dev/null 2>&1
 	done
-    logger -t "AdGuardHome" "重定向53端口"
+    	logger -t "AdGuardHome" "重定向53端口"
     fi
 }
 
@@ -147,12 +147,12 @@ dl_adg(){
 	tar -xzvf /media/extDisk/Share/AdGuardHome.tar.gz ./AdGuardHome/AdGuardHome --directory /media/extDisk/AdGuardHome
 	#curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
 	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
-	logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
-	nvram set adg_enable=0
-	exit 0
+		logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
+		nvram set adg_enable=0
+		exit 0
 	else
-	logger -t "AdGuardHome" "AdGuardHome下载成功。"
-	chmod 777 /media/extDisk/AdGuardHome/AdGuardHome
+		logger -t "AdGuardHome" "AdGuardHome下载成功。"
+		chmod 777 /media/extDisk/AdGuardHome/AdGuardHome
 	fi
 }
 
@@ -160,7 +160,7 @@ start_adg(){
 	mkdir -p /media/extDisk/AdGuardHome
 	mkdir -p /etc/storage/AdGuardHome
 	if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
-	dl_adg
+		dl_adg
 	fi
 	getconfig
 	change_dns
