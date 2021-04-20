@@ -117,9 +117,13 @@ filters:
   name: hpHosts - Ad and Tracking servers only
   id: 3
 - enabled: true
-  url: https://www.malwaredomainlist.com/hostslist/hosts.txt
-  name: MalwareDomainList.com Hosts List
+  url: https://gitee.com/xinggsf/Adblock-Rule/raw/master/rule.txt
+  name: xinggsf@kafan.cn
   id: 4
+- enabled: true
+  url: https://cdn.jsdelivr.net/gh/privacy-protection-tools/anti-AD@master/anti-ad-easylist.txt
+  name: anti-AD
+  id: 5
 user_rules: []
 dhcp:
   enabled: false
