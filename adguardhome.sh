@@ -150,7 +150,7 @@ logger -t "AdGuardHome" "下载AdGuardHome"
 curl -k -s -o /media/extDisk/Share/AdGuardHome.tar.gz --connect-timeout 60 --retry 3 \
 	https://ghproxy.com/https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mipsle_softfloat.tar.gz
 #curl -k -s -o /tmp/AdGuardHome/AdGuardHome --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome
-cd /media/extDisk/AdGuardHome
+cd /media/extDisk
 tar -xzvf /media/extDisk/Share/AdGuardHome.tar.gz ./AdGuardHome/AdGuardHome
 if [ ! -f "/media/extDisk/AdGuardHome/AdGuardHome" ]; then
 logger -t "AdGuardHome" "AdGuardHome下载失败，请检查是否能正常访问github!程序将退出。"
