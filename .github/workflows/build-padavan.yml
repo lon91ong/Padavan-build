@@ -7,6 +7,8 @@ on:
 
 jobs:
   build:
+    env:
+      UPLOAD_COWTRANSFER: true
     runs-on: ubuntu-18.04
     if: github.event.repository.owner.id == github.event.sender.id
 
@@ -97,3 +99,11 @@ jobs:
       with:
         name: Padavan-packages
         path: /opt/images
+    - name: Upload firmware to cowtransfer
+      id: cowtransfer
+      if: env.UPLOAD_COWTRANSFER == 'true'
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress /opt/images 2>&1 | tee cowtransfer.log
+        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
+        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
