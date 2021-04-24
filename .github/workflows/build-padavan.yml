@@ -5,10 +5,12 @@ on:
   watch:
     types: [started]
 
+env:
+  REPO_URL: https://github.com/chongshengB/rt-n56u.git
+  UPLOAD_COWTRANSFER: true
+
 jobs:
   build:
-    env:
-      UPLOAD_COWTRANSFER: true
     runs-on: ubuntu-18.04
     if: github.event.repository.owner.id == github.event.sender.id
 
@@ -25,7 +27,7 @@ jobs:
         pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
     - name: Clone source code
       run: |
-        git clone --depth=1 https://github.com/chongshengB/rt-n56u.git /opt/rt-n56u
+        git clone --depth=1 $REPO_URL /opt/rt-n56u
         cd /opt/rt-n56u/toolchain-mipsel
         sh dl_toolchain.sh
         mkdir -p /opt/images/
