@@ -28,6 +28,7 @@ jobs:
         sh dl_toolchain.sh
         mkdir -p /opt/images/
         cp -f $GITHUB_WORKSPACE/adguardhome.sh /opt/rt-n56u/trunk/user/adguardhome/
+        sed -i "s/20201015/$(date '+%Y%m%d')/g" /opt/rt-n56u/trunk/versions.inc
     - name: Build Firmware
       env:
         TNAME: YK-L1
